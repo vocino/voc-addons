@@ -132,6 +132,21 @@ Run: `bash ~/workspace/skills/voc-addons/checks/<check>.sh <repo-dir>`.
 Exit nonzero on violation. Keep checks fast, dependency-free, and
 false-positive-free; a noisy check gets fixed or deleted, never ignored.
 
+## Debugging
+
+The agent is blind in game, so the family debugs with the community's
+tools, not its own. **!BugGrabber** captures every Lua error with
+stack and context; **BugSack** is the in-game viewer (`/bugsack`).
+Both live on the dev machine; point bug reporters at them too.
+
+Errors persist to `WTF/Account/<account>/SavedVariables/!BugGrabber.lua`
+on `/reload` or logout. The loop: the player reproduces the problem,
+runs `/reload`, and the agent reads that file directly — no paste step
+on a machine that also runs WoW. Parse with regex on `["message"]`
+fields, never brace-counting: the `["locals"]` dump nests braces and
+breaks structural parsers. Stale records survive a fix, so confirm
+the player reproduced the issue again before trusting one.
+
 ## How this skill evolves
 
 Principles start as experiments, not laws. When working on an addon,
