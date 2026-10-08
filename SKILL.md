@@ -147,6 +147,12 @@ fields, never brace-counting: the `["locals"]` dump nests braces and
 breaks structural parsers. Stale records survive a fix, so confirm
 the player reproduced the issue again before trusting one.
 
+`tools/read-buggrabber` (python3, stdlib only) does the reading:
+prints the file's errors newest-first and deduplicated. Run
+`tools/read-buggrabber --full` for stack traces, `-n 50` for more.
+With no path it looks under `$WOW_DIR` and the standard install
+locations.
+
 ## How this skill evolves
 
 Principles start as experiments, not laws. When working on an addon,

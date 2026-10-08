@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+"""Read !BugGrabber's saved errors without opening WoW.
+
+BugGrabber persists captured Lua errors to
+  WTF/Account/<account>/SavedVariables/!BugGrabber.lua
+on /reload or logout. This prints them newest-first, deduplicated.
+
+Usage:
+  read-buggrabber [path] [--full] [-n 20]
+
+If no path is given, looks under $WOW_DIR, then the standard
+install locations for _retail_, _classic_era_, _classic_, and
+_classic_beta_. --full also prints the stack trace of each error.
+"""
+import os
+import re
+import sys
+
+MSG = re.compile(r'\["message"\]\s*=\s*"(.*?)(?<!\\)"', re.S)
+STACK = re.compile(r'\["stack"\]\s*=\s*"(.*?)(?<!\\)"', re.S)
+SESSION = re.compile(r'\["session"\]\s*=\s*(\d+)')
+
+
+def unescape(s):
+    return s.replace('\\"', '"').replace("\\n", "\n").replace("\\\\", "\\")
+
+
+def find_log():
+    roots = []
+    if os.environ.get("WOW_DIR"):
+        roots.append(os.environ["WOW_DIR"])
+    if sys.platform == "win32":
+        roots.append(r"C:\Program Files (x86)\World of Warcraft")
+    else:
+        roots += [
+            os.path.expanduser("~/Games/world-of-warcraft/drive_c/Program Files (x86)/World of Warcraft"),
+        ]
+    for root in roots:
+        for flavor in ("_retail_", "_classic_era_", "_classic_", "_classic_beta_"):
+            wtf = os.path.join(root, flavor, "WTF", "Account")
+            if not os.path.isdir(wtf):
+                continue
+            for account in os.listdir(wtf):
+                p = os.path.join(wtf, account, "SavedVariables", "!BugGrabber.lua")
+                if os.path.isfile(p):
+                    return p
+    return None
+
+
+def main(argv):
+    full = "--full" in argv
+    argv = [a for a in argv if a != "--full"]
+    n = 20
+    if "-n" in argv:
+        n = int(argv[argv.index("-n") + 1])
+        argv = [a for a in argv if a not in ("-n", str(n))]
+    path = argv[0] if argv else find_log()
+    if not path:
+        print("no !BugGrabber.lua found; pass a path or set WOW_DIR", file=sys.stderr)
+        return 1
+    with open(path, encoding="utf-8", errors="replace") as f:
+        content = f.read()
+
+    # Split into error entries on ["message"]; the ["locals"] dump nests
+    # braces, so structural parsing is unreliable — regex it is.
+    entries = []
+    for m in MSG.finditer(content):
+        msg = unescape(m.group(1)).strip()
+        rest = content[m.end():m.end() + 4000]
+        stack = unescape(STACK.search(rest).group(1)).strip() if STACK.search(rest) else ""
+        session = SESSION.search(rest)
+        entries.append({
+            "message": msg,
+            "stack": stack,
+            "session": int(session.group(1)) if session else 0,
+        })
+
+    seen = {}
+    for e in reversed(entries):  # newest first
+        key = e["message"]
+        if key not in seen:
+            seen[key] = e
+    unique = list(seen.values())[:n]
+
+    if not unique:
+        print("no errors recorded")
+        return 0
+    for i, e in enumerate(unique, 1):
+        print(f"--- [{i}] session {e['session']} ---")
+        print(e["message"])
+        if full and e["stack"]:
+            print()
+            print(e["stack"])
+        print()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
