@@ -1,0 +1,14 @@
+## Interface: 16001
+## Title: VocFixture
+## Notes: The smallest addon that passes every voc-addons check. (/vf) (Forever client)
+## Author: vocino
+## Version: @project-version@
+## Category: Miscellaneous
+## IconTexture: Interface\Icons\INV_Misc_QuestionMark
+## SavedVariables: VocFixtureDB
+## AddonCompartmentFunc: VocFixture_CompartmentClick
+## AddonCompartmentFuncOnEnter: VocFixture_CompartmentEnter
+## AddonCompartmentFuncOnLeave: VocFixture_CompartmentLeave
+## X-License: MIT
+
+main.lua

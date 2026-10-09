@@ -193,7 +193,11 @@ shipped, not from speculation.
 
 Checks are the proven tier: a check only lands here once every repo
 already passes it. They describe what is true, never what is wished
-for.
+for. `checks/self-test.sh` runs every check against a clean fixture
+and against one mutation per check, and the skill's own CI runs it
+on every push: repos clone this branch live, so a check that broke
+quietly would break four CIs at once, and a new check without a
+failing case does not land.
 
 ## References
 
