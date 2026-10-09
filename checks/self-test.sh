@@ -74,6 +74,22 @@ expect fail family-docs.sh "FAMILY.md drift"
 fresh; rm "$work/repo/VERSIONING.md"
 expect fail family-docs.sh "VERSIONING.md missing"
 
+fresh; sed -i 's/^  "\/vf help       this list (\/vocfixture works too)",$/  "\/vf help       this list",/' "$work/repo/main.lua"
+expect fail help-table.sh "help line without the long form"
+fresh; sed -i 's/^  "\/vf config     open Settings > AddOns > VocFixture",$/  "\/vf scan       look around",/' "$work/repo/main.lua"
+expect fail help-table.sh "config not second to last"
+fresh; sed -i '/^ns.HELP = {/,/^}/d' "$work/repo/main.lua"
+expect fail help-table.sh "no help table"
+fresh; printf 'ns.say("/vf help lists the rest. Then act")\n' >> "$work/repo/main.lua"
+expect pass no-trailing-period.sh "period inside the line is fine"
+
+fresh; printf 'ns.say("done.")\n' >> "$work/repo/main.lua"
+expect fail no-trailing-period.sh "literal ending in a period"
+fresh; printf 'ns.say(on and "locked." or "unlocked")\n' >> "$work/repo/main.lua"
+expect fail no-trailing-period.sh "or-branch ending in a period"
+fresh; printf 'ns.say("v1.2.3 ready")\n' >> "$work/repo/main.lua"
+expect pass no-trailing-period.sh "version number is not a trailing period"
+
 # Every check in the folder got at least one failing case above.
 for check in "$here"/*.sh; do
   n="$(basename "$check")"

@@ -23,8 +23,11 @@ git clone https://github.com/vocino/voc-addons.git ~/.claude/skills/voc-addons
 - `references/`: the Foolkevin craft study, the visual identity spec
   (palette values, the tooltip contract, the icon table), and the API
   ledger (every Blizzard name the family relies on, verified on both clients).
-- `checks/`: mechanical checks that run in CI on every Voc repo: no
-  hardcoded colors, no `ReloadUI`, dual tocs, the addon compartment wired.
+- `checks/`: mechanical checks that run in CI on every Voc repo through
+  `run-all.sh`: no hardcoded colors, no `ReloadUI`, no deprecated globals,
+  dual tocs, the addon compartment wired, the help table on the family
+  grammar, no trailing periods in chat, the family docs identical.
+  `self-test.sh` proves each one passes a clean repo and fails a dirty one.
 - `templates/addon/` and `tools/new-addon`: scaffold a new Voc addon that
   passes every test, lint, and check before its one job is written.
 - `tools/verify-api`: checks an API name against Blizzard's own source on

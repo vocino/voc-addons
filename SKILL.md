@@ -152,6 +152,11 @@ in CI on every Voc repo. Prose states the standard; checks enforce it.
   evidence live in `checks/deprecated-globals.txt` (principle 11)
 - `dual-toc.sh`: every addon ships a Retail toc and a Forever toc
   (principle 11)
+- `help-table.sh`: one `ns.HELP` table, every line on the short slash,
+  `config` second to last, `help` last naming the long form (FAMILY.md
+  "Slash grammar")
+- `no-trailing-period.sh`: no chat line handed to `ns.say` ends in a
+  period (FAMILY.md "Chat voice")
 - `family-docs.sh`: the repo's `FAMILY.md` and `VERSIONING.md` are
   byte-identical to the canonical copies in `family/`; the family
   contract is edited there and copied out, never the other way
