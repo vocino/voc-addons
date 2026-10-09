@@ -32,7 +32,13 @@ Never hardcode a hex at a call site.
 
 Red and green appear only for state. When red appears it means
 something, because it almost never appears. Pure Blizzard red is
-harsh; soften it toward brick.
+harsh; soften it toward brick. The exact values every addon ships
+(FAMILY.md "Palette"): gold `1, 0.82, 0`, text `1, 1, 1`, muted
+`0.5, 0.5, 0.5`, red `0.9, 0.3, 0.25`, green `0.25, 0.9, 0.35`.
+Data colors an addon owns (item quality, verdicts) sit in the same
+table. Chrome tints that build a look (a backdrop's black at 0.85, a
+skin's exact gray recipe) are construction, not palette, and stay
+with the look that uses them.
 
 Panels are dark and textured: build on Blizzard's own 9-slice
 backdrops, never a flat custom fill. Gold is the single warm accent
@@ -94,18 +100,51 @@ equipment, arrow for XP). Rules for new medallions:
 - Ornate but not busy: the glyph must survive shrinking to the
   addon compartment.
 
+Until the medallions ship, each toc points `## IconTexture` at the
+stock game icon whose glyph matches the job, so the addon list and
+the compartment already read as a set:
+
+| Addon | Stock icon | Glyph |
+| --- | --- | --- |
+| VocWarbank | `Interface\Icons\INV_Misc_Coin_01` | coin |
+| VocVendor | `Interface\Icons\INV_Misc_Coin_02` | coin |
+| VocGear | `Interface\Icons\INV_Chest_Chain` | gear |
+| VocXP | `Interface\Icons\XP_Icon` | XP |
+
+A medallion replaces the stock icon in both tocs at once; the glyph
+stays.
+
+## Tooltip contract
+
+One recipe, every hover, from the addon compartment to a button on
+the character sheet:
+
+1. Title, gold: `GameTooltip:SetText(name, gold)`.
+2. One white line saying what it does, wrapped.
+3. For the compartment, one muted line teaching the slash command
+   ("/vw opens the window. /vw help lists the rest.").
+4. A red restriction line only when the control cannot work right now.
+
+Buttons on `UIPanelButtonTemplate` get the title for free from
+`tooltipText`; everything else sets it by hand.
+
 ## Motion and sound
 
 - Panels fade or scale in subtly; nothing pops.
 - Every interaction confirms with a Blizzard sound (see the skill's
-  principle 3). Toggles use the checkbox pair. Nothing is silent.
+  principle 3). Toggles use the checkbox pair (856/857), windows and
+  readouts open and close (850/851), and every button clicks. Nothing
+  is silent, on the slash line included.
 - Hover tooltips follow the contract: title, one-line description,
   red restriction line when it does not apply.
 
 ## Chat voice
 
-Chat output follows FAMILY.md "Chat voice": short, plain, no spam.
-The addon announces what it did and stays quiet otherwise.
+Chat output follows FAMILY.md "Chat voice": short, plain, no spam,
+lower-case first word, no trailing period. The addon announces what
+it did and stays quiet otherwise. Help is a padded table, `config`
+second to last and `help` last, and the help line names the long
+slash form.
 
 ## Anti-patterns
 

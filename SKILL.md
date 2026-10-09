@@ -55,10 +55,17 @@ addon; never hardcode a hex color at a call site.
 
 Play a Blizzard sound on every meaningful interaction, with a numeric
 fallback (`SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 856`) so a Blizzard
-rename never silently kills the polish. Hovering a control shows a
-tooltip: title, one-line description, and a red restriction line when it
-does not apply ("does not work in instances"). Tooltips never fire
-mid-drag; guard with `IsMouseButtonDown()`.
+rename never silently kills the polish. The helper is one shape in
+every addon (FAMILY.md "Sounds": `ns.play("on"|"off"|"open"|"close")`,
+SOUNDKIT names first, IDs behind them, presence-gated). Toggles use
+the checkbox pair, windows and readouts open/close, and slash toggles
+count: `/vg off` sounds like the checkbox it is. Stock
+`UIPanelButtonTemplate` plays nothing on click (it only wires
+OnEnter/OnLeave), so a button built on it is silent until the addon
+hooks its click. Hovering a control shows a tooltip: title, one-line
+description, and a red restriction line when it does not apply ("does
+not work in instances"). Tooltips never fire mid-drag; guard with
+`IsMouseButtonDown()`.
 
 ### 4. Settings are data, applied live
 
@@ -102,16 +109,24 @@ itself afterward. The player is never left blind or staring at an error.
 
 ### 10. Design for the next developer
 
-Public widgets get documented. Wire the addon compartment. Teach the
-slash command in the toc notes. A stranger should be able to extend the
-addon without reading your mind.
+Public widgets get documented. Wire the addon compartment: all three
+toc keys (`AddonCompartmentFunc`, `...OnEnter`, `...OnLeave`), a click
+that opens the window when there is one and the settings panel
+otherwise, and a hover on the tooltip contract (gold title, one line
+naming the job, one muted line teaching the slash command). Teach the
+slash command in the toc notes too: `## Notes: <sentence> (/vx)`. A
+stranger should be able to extend the addon without reading your mind,
+and a player should find it without reading anything.
 
 ### 11. Every version of the game
 
 V plays Midnight and Forever, so every addon ships a toc for both and
 the same code runs on each. Verify every API against both clients (the
 `live` and `forever` branches of the UI source mirror) before relying
-on it. When a feature only exists on one version, presence-gate it:
+on it. Bare globals that Blizzard moved into a `C_*` namespace are
+gone on both (`IsAddOnLoaded` is `C_AddOns.IsAddOnLoaded`); a
+presence gate around a global that no longer exists is dead code
+that reads as a feature. When a feature only exists on one version, presence-gate it:
 the addon loads and works everywhere, and the feature quietly sits out
 where it can't run. A missing API is never a missing addon. Dual tocs
 are the mechanism; presence gates are the safety net.
@@ -121,10 +136,14 @@ are the mechanism; presence gates are the safety net.
 Principles that can be verified mechanically live in `checks/` and run
 in CI on every Voc repo. Prose states the standard; checks enforce it.
 
-- `no-hardcoded-colors.sh`: no `|cff` hex literals or numeric
-  `CreateColor` at call sites (principle 2)
+- `no-hardcoded-colors.sh`: no `|cff` hex literals, numeric
+  `CreateColor`, or numeric `SetTextColor`/`SetVertexColor` at call
+  sites; colors live in `palette.lua` or one `COLORS` table and are
+  named everywhere else (principle 2)
 - `no-reloadui.sh`: settings apply live; `ReloadUI` never ships
   (principle 4)
+- `compartment.sh`: every toc declares the three compartment entry
+  points and the Lua defines them (principle 10)
 - `dual-toc.sh`: every addon ships a Retail toc and a Forever toc
   (principle 11)
 
