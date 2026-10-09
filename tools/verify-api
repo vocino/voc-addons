@@ -12,6 +12,7 @@
 # generated API docs list it, whether Blizzard's own Lua defines or
 # calls it, and a one-word verdict:
 #   ok        documented under that namespace (or defined in Lua)
+#   used      undocumented, but Blizzard's own code calls it: presence-gate it
 #   bare      a bare global Blizzard's own code still calls
 #   GONE      documented only under a C_* namespace, zero bare calls:
 #             the bare form no longer exists; read the namespace
@@ -84,7 +85,9 @@ for arg in "$@"; do
           echo "  $b: ok   $ns.$fn documented (also under: ${nss})"
         else
           def="$(lua_definition "$b" "$ns.$fn")"
+          used="$(grep -rhoF "$ns.$fn(" "$root/$b/Interface/AddOns" --include=*.lua --include=*.xml 2>/dev/null | wc -l | tr -d ' ')"
           if [ -n "$def" ]; then echo "  $b: ok   defined in Lua: $def"
+          elif [ "$used" -gt 0 ]; then echo "  $b: used undocumented, but Blizzard's own code calls $ns.$fn $used times; presence-gate it"
           else echo "  $b: unknown  $ns.$fn not in docs (namespaces listing $fn: ${nss:-none})"; status=1; fi
         fi
       done ;;

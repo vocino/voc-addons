@@ -34,6 +34,7 @@ GetItemClassInfo
 IsEquippedItem
 IsArtifactPowerItem
 GetItemUniqueness
+EquipItemByName
 
 # --- Tier 1: C_Container ---
 GetContainerItemInfo

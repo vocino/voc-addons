@@ -20,8 +20,9 @@ git clone https://github.com/vocino/voc-addons.git ~/.claude/skills/voc-addons
   craft, this skill wins.
 - `family/`: the canonical `FAMILY.md` and `VERSIONING.md` every Voc repo
   carries; a check holds the copies identical.
-- `references/`: the Foolkevin craft study and the visual identity spec
-  (palette values, the tooltip contract, the icon table).
+- `references/`: the Foolkevin craft study, the visual identity spec
+  (palette values, the tooltip contract, the icon table), and the API
+  ledger (every Blizzard name the family relies on, verified on both clients).
 - `checks/`: mechanical checks that run in CI on every Voc repo: no
   hardcoded colors, no `ReloadUI`, dual tocs, the addon compartment wired.
 - `templates/addon/` and `tools/new-addon`: scaffold a new Voc addon that

@@ -228,6 +228,10 @@ failing case does not land.
   (members, naming, slash grammar, chat voice, sounds, palette,
   settings, repository layout, release flow). Canonical here; every
   repo carries a copy that CI holds identical.
+- `references/api-ledger.md`: every Blizzard name the family relies
+  on, with `tools/verify-api`'s verdict on both clients. The auditable
+  record behind each `.luacheckrc` entry; a row changes only after the
+  code does.
 - `references/voc-visual-identity.md`: the shared visual spec. Color
   tokens, type hierarchy, information hierarchy, panel construction,
   the medallion icon language, motion and sound, anti-patterns.
