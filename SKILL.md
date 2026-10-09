@@ -147,8 +147,10 @@ in CI on every Voc repo. Prose states the standard; checks enforce it.
 - `dual-toc.sh`: every addon ships a Retail toc and a Forever toc
   (principle 11)
 
-Run: `bash ~/workspace/skills/voc-addons/checks/<check>.sh <repo-dir>`.
-Exit nonzero on violation. Keep checks fast, dependency-free, and
+Run them all: `bash checks/run-all.sh <repo-dir>`, which is the one
+line every repo's CI calls, so a new check lands here and in no
+workflow. One check: `bash checks/<check>.sh <repo-dir>`. Exit nonzero
+on violation. Keep checks fast, dependency-free, and
 false-positive-free; a noisy check gets fixed or deleted, never ignored.
 
 ## Debugging
