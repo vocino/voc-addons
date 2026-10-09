@@ -24,6 +24,8 @@ git clone https://github.com/vocino/voc-addons.git ~/.claude/skills/voc-addons
   (palette values, the tooltip contract, the icon table).
 - `checks/`: mechanical checks that run in CI on every Voc repo: no
   hardcoded colors, no `ReloadUI`, dual tocs, the addon compartment wired.
+- `templates/addon/` and `tools/new-addon`: scaffold a new Voc addon that
+  passes every test, lint, and check before its one job is written.
 - `tools/read-buggrabber`: reads !BugGrabber's saved errors without
   opening the game.
 

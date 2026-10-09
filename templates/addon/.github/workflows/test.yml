@@ -16,13 +16,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y lua5.1 lua-check
 
-      - name: checks self-test
-        run: bash checks/self-test.sh
+      - name: headless tests
+        run: lua5.1 tests/run.lua
 
-      - name: template scaffolds a passing addon
+      - name: lint
+        run: luacheck .
+
+      - name: skill checks
         run: |
-          tools/new-addon VocSample vs /tmp/sample
-          cd /tmp/sample
-          lua5.1 tests/run.lua
-          luacheck .
-          bash "$GITHUB_WORKSPACE/checks/run-all.sh" .
+          git clone --depth 1 https://github.com/vocino/voc-addons.git /tmp/voc-addons
+          bash /tmp/voc-addons/checks/run-all.sh .

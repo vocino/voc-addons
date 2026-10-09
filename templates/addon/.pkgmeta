@@ -1,0 +1,10 @@
+package-as: VocName
+
+ignore:
+  - .agents
+  - .github
+  - .luacheckrc
+  - tests
+  - AGENTS.md
+  - FAMILY.md
+  - VERSIONING.md

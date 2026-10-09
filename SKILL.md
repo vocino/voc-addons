@@ -199,6 +199,19 @@ on every push: repos clone this branch live, so a check that broke
 quietly would break four CIs at once, and a new check without a
 failing case does not land.
 
+## Templates and tools
+
+- `templates/addon/`: the family skeleton. `tools/new-addon <Name>
+  <short> <dir>` scaffolds a repo from it (both tocs, chat voice,
+  sounds, palette, defaults, a native Settings panel, the compartment
+  entry, the slash grammar, the stub test harness, lint, packager,
+  workflows, README, AGENTS.md, the family docs) with every placeholder
+  renamed. It passes tests, lint, and every check as scaffolded; the
+  skill's CI proves that on each push. Keep the template in the shape
+  the shipped addons use; when a pattern changes in the family, change
+  it here too.
+- `tools/read-buggrabber`: see Debugging.
+
 ## References
 
 - `family/FAMILY.md` and `family/VERSIONING.md`: the family contract

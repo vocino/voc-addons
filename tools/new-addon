@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# voc-addons: scaffold a new Voc addon from templates/addon.
+#
+# Usage: tools/new-addon <Name> <short> <dest-dir>
+#   Name   the addon name, `Voc` + one CamelCase word (VocGear)
+#   short  the short slash without the slash, `v` + one or two letters (vg)
+#   dest   a directory that does not exist yet
+#
+# Copies the template, renames every placeholder (VocName, VOCNAME,
+# vocname, /vn), and drops in the canonical family docs. The result
+# passes `lua tests/run.lua`, `luacheck .`, and `checks/run-all.sh`
+# before a line of the one job is written. Then: fill in the toc notes,
+# pick a Category and IconTexture, register CurseForge and Wago, and
+# add the Members row in family/FAMILY.md.
+
+set -eu
+name="${1:?usage: new-addon <Name> <short> <dest-dir>}"
+short="${2:?usage: new-addon <Name> <short> <dest-dir>}"
+dest="${3:?usage: new-addon <Name> <short> <dest-dir>}"
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+skill="$here/.."
+
+case "$name" in
+  Voc[A-Z]*) ;;
+  *) echo "Name must be Voc + one CamelCase word (got '$name')"; exit 1 ;;
+esac
+case "$short" in
+  v[a-z]|v[a-z][a-z]) ;;
+  *) echo "short must be v + one or two lower-case letters (got '$short')"; exit 1 ;;
+esac
+if [ -e "$dest" ]; then
+  echo "$dest already exists; scaffold into a new directory"
+  exit 1
+fi
+
+upper="$(printf '%s' "$name" | tr '[:lower:]' '[:upper:]')"
+lower="$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]')"
+
+mkdir -p "$dest"
+cp -r "$skill/templates/addon/." "$dest/"
+cp "$skill/family/FAMILY.md" "$skill/family/VERSIONING.md" "$dest/"
+
+# Rename placeholders in file contents, then in file names.
+find "$dest" -type f ! -path '*/.git/*' -print0 | while IFS= read -r -d '' f; do
+  sed -i \
+    -e "s/VocName/$name/g" \
+    -e "s/VOCNAME/$upper/g" \
+    -e "s/vocname/$lower/g" \
+    -e "s#/vn\b#/$short#g" \
+    "$f"
+done
+mv "$dest/VocName.toc" "$dest/$name.toc"
+mv "$dest/VocName_Forever.toc" "$dest/${name}_Forever.toc"
+
+# The help table's padding assumes a two-letter short; re-pad for three.
+if [ "${#short}" -eq 3 ]; then
+  sed -i -E "s#^(  \"/$short(\s+[a-z|]+)?)  #\1 #" "$dest/main.lua" "$dest/README.md"
+fi
+
+echo "scaffolded $name at $dest"
+echo "next: lua tests/run.lua && luacheck . && bash $skill/checks/run-all.sh ."

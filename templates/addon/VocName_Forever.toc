@@ -1,0 +1,17 @@
+## Interface: 16001
+## Title: VocName
+## Notes: One sentence saying what it does. (/vn) (Forever client)
+## Author: vocino
+## Version: @project-version@
+## Category: Miscellaneous
+## IconTexture: Interface\Icons\INV_Misc_QuestionMark
+## SavedVariables: VocNameDB
+## AddonCompartmentFunc: VocName_CompartmentClick
+## AddonCompartmentFuncOnEnter: VocName_CompartmentEnter
+## AddonCompartmentFuncOnLeave: VocName_CompartmentLeave
+## X-Website: https://github.com/vocino/vocname
+## X-License: MIT
+## X-Curse-Project-ID: 0
+## X-Wago-ID: 0
+
+main.lua
