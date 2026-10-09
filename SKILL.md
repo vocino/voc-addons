@@ -144,6 +144,10 @@ in CI on every Voc repo. Prose states the standard; checks enforce it.
   (principle 4)
 - `compartment.sh`: every toc declares the three compartment entry
   points and the Lua defines them (principle 10)
+- `no-deprecated-globals.sh`: no bare call to, and no `.luacheckrc`
+  entry for, a global Blizzard moved into a `C_*` namespace or still
+  ships only as a `Blizzard_Deprecated` shim; the list and its
+  evidence live in `checks/deprecated-globals.txt` (principle 11)
 - `dual-toc.sh`: every addon ships a Retail toc and a Forever toc
   (principle 11)
 
