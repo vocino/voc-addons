@@ -26,6 +26,8 @@ git clone https://github.com/vocino/voc-addons.git ~/.claude/skills/voc-addons
   hardcoded colors, no `ReloadUI`, dual tocs, the addon compartment wired.
 - `templates/addon/` and `tools/new-addon`: scaffold a new Voc addon that
   passes every test, lint, and check before its one job is written.
+- `tools/verify-api`: checks an API name against Blizzard's own source on
+  both the live and Forever branches and says ok, bare, GONE, or unknown.
 - `tools/read-buggrabber`: reads !BugGrabber's saved errors without
   opening the game.
 

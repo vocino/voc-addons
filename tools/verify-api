@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# voc-addons: verify a WoW API name against Blizzard's own source on
+# both clients (FAMILY.md "Sources of truth"; the skill's principle 11).
+#
+# Usage: tools/verify-api [--refresh] <name>...
+#   name   C_Item.GetItemInfo   a namespaced function
+#          UnitLevel            a bare global function
+#          SOUNDKIT.ITEM_REPAIR a sound kit constant
+#          UIPanelButtonMixin   a Lua-defined global (mixin, template, function)
+#
+# For each name and each branch (live, forever) it reports where the
+# generated API docs list it, whether Blizzard's own Lua defines or
+# calls it, and a one-word verdict:
+#   ok        documented under that namespace (or defined in Lua)
+#   bare      a bare global Blizzard's own code still calls
+#   GONE      documented only under a C_* namespace, zero bare calls:
+#             the bare form no longer exists; read the namespace
+#   unknown   nothing found; do not ship it unguarded
+#
+# The mirror (github.com/Gethe/wow-ui-source) is cloned once, sparsely,
+# under $VOC_REF_DIR (default ~/.cache/voc-addons/wow-ui-source) and
+# pulled when older than a day or with --refresh. Needs git and bash.
+
+set -u
+refresh=0
+if [ "${1:-}" = "--refresh" ]; then refresh=1; shift; fi
+[ $# -ge 1 ] || { sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
+
+root="${VOC_REF_DIR:-$HOME/.cache/voc-addons/wow-ui-source}"
+mirror="https://github.com/Gethe/wow-ui-source"
+branches="live forever"
+
+ensure_branch() {
+  local b="$1" dir="$root/$1"
+  if [ ! -d "$dir/.git" ]; then
+    echo "cloning $mirror ($b) into $dir ..." >&2
+    mkdir -p "$root"
+    git clone -q --depth 1 --branch "$b" --filter=blob:none --sparse "$mirror" "$dir" || return 1
+    (cd "$dir" && git sparse-checkout set Interface/AddOns >/dev/null 2>&1)
+  elif [ "$refresh" -eq 1 ] || [ -n "$(find "$dir/.git/FETCH_HEAD" -mtime +0 2>/dev/null)" ] || [ ! -f "$dir/.git/FETCH_HEAD" ]; then
+    (cd "$dir" && git pull -q --depth 1 origin "$b" >/dev/null 2>&1) || echo "warning: pull failed for $b, using the cached copy" >&2
+  fi
+}
+
+for b in $branches; do ensure_branch "$b" || { echo "cannot fetch branch $b" >&2; exit 2; }; done
+
+# Namespaces whose docs list Name = "<fn>".
+doc_namespaces() { # <branch> <fn>
+  local docs="$root/$1/Interface/AddOns/Blizzard_APIDocumentationGenerated"
+  grep -lE "Name = \"$2\"," "$docs"/*.lua 2>/dev/null | while read -r f; do
+    local ns
+    ns="$(grep -oE '^\s*Namespace = "[A-Za-z_0-9]+"' "$f" | head -1 | sed -E 's/.*"([A-Za-z_0-9]+)"/\1/')"
+    echo "${ns:-GLOBAL}"
+  done | sort -u | paste -sd ',' -
+}
+
+bare_calls() { # <branch> <fn>: calls in Blizzard Lua/XML not preceded by . or :
+  grep -rhoE "(^|[^A-Za-z0-9_.:])$2\(" "$root/$1/Interface/AddOns" --include=*.lua --include=*.xml 2>/dev/null | wc -l | tr -d ' '
+}
+
+lua_definition() { # <branch> <name>: first file defining it
+  grep -rlE "^(local )?function $2[(:.]|^$2 = " "$root/$1/Interface/AddOns" --include=*.lua 2>/dev/null | head -1 | sed "s#^$root/$1/##"
+}
+
+soundkit() { # <branch> <CONST>
+  grep -rhoE "^\s*$2 = [0-9]+" "$root/$1/Interface/AddOns/Blizzard_SharedXML" 2>/dev/null | head -1 | sed -E 's/^\s*//'
+}
+
+status=0
+for arg in "$@"; do
+  echo "== $arg"
+  case "$arg" in
+    SOUNDKIT.*)
+      c="${arg#SOUNDKIT.}"
+      for b in $branches; do
+        v="$(soundkit "$b" "$c")"
+        if [ -n "$v" ]; then echo "  $b: ok   SOUNDKIT.$v"; else echo "  $b: unknown  no SOUNDKIT.$c in SoundKitConstants"; status=1; fi
+      done ;;
+    *.*)
+      ns="${arg%%.*}"; fn="${arg#*.}"
+      for b in $branches; do
+        nss="$(doc_namespaces "$b" "$fn")"
+        if printf '%s' ",$nss," | grep -q ",$ns,"; then
+          echo "  $b: ok   $ns.$fn documented (also under: ${nss})"
+        else
+          def="$(lua_definition "$b" "$ns.$fn")"
+          if [ -n "$def" ]; then echo "  $b: ok   defined in Lua: $def"
+          else echo "  $b: unknown  $ns.$fn not in docs (namespaces listing $fn: ${nss:-none})"; status=1; fi
+        fi
+      done ;;
+    *)
+      fn="$arg"
+      for b in $branches; do
+        nss="$(doc_namespaces "$b" "$fn")"
+        bare="$(bare_calls "$b" "$fn")"
+        def="$(lua_definition "$b" "$fn")"
+        if [ -n "$def" ]; then
+          echo "  $b: ok   defined in Lua: $def (docs: ${nss:-none}, bare calls: $bare)"
+        elif printf '%s' ",$nss," | grep -q ",GLOBAL,"; then
+          echo "  $b: ok   documented as a global (bare calls: $bare)"
+        elif [ -n "$nss" ] && [ "$bare" -eq 0 ]; then
+          echo "  $b: GONE documented only under $nss, zero bare calls; read the namespace"; status=1
+        elif [ -n "$nss" ]; then
+          echo "  $b: bare Blizzard still calls it bare $bare times, but it is documented under $nss; prefer the namespace"
+        elif [ "$bare" -gt 0 ]; then
+          echo "  $b: bare Blizzard calls it bare $bare times (undocumented C global)"
+        else
+          echo "  $b: unknown  not documented, not defined, never called"; status=1
+        fi
+      done ;;
+  esac
+done
+exit $status

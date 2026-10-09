@@ -123,10 +123,12 @@ and a player should find it without reading anything.
 V plays Midnight and Forever, so every addon ships a toc for both and
 the same code runs on each. Verify every API against both clients (the
 `live` and `forever` branches of the UI source mirror) before relying
-on it. Bare globals that Blizzard moved into a `C_*` namespace are
-gone on both (`IsAddOnLoaded` is `C_AddOns.IsAddOnLoaded`); a
-presence gate around a global that no longer exists is dead code
-that reads as a feature. When a feature only exists on one version, presence-gate it:
+on it: `tools/verify-api <name>...` does the lookup on both branches
+and answers ok, bare, GONE, or unknown for each. Bare globals that
+Blizzard moved into a `C_*` namespace are gone on both
+(`IsAddOnLoaded` is `C_AddOns.IsAddOnLoaded`); a presence gate around
+a global that no longer exists is dead code that reads as a feature,
+and `checks/no-deprecated-globals.sh` catches the known ones. When a feature only exists on one version, presence-gate it:
 the addon loads and works everywhere, and the feature quietly sits out
 where it can't run. A missing API is never a missing addon. Dual tocs
 are the mechanism; presence gates are the safety net.
@@ -210,6 +212,14 @@ failing case does not land.
   skill's CI proves that on each push. Keep the template in the shape
   the shipped addons use; when a pattern changes in the family, change
   it here too.
+- `tools/verify-api [--refresh] <name>...`: verifies a namespaced
+  function (`C_Item.GetItemInfo`), a bare global (`UnitLevel`), a sound
+  constant (`SOUNDKIT.ITEM_REPAIR`), or a Lua-defined global
+  (`UIPanelButtonMixin`) against Blizzard's own source on both the
+  `live` and `forever` branches, from a cached sparse clone of the
+  mirror. Run it before adding a name to `.luacheckrc`; paste its
+  verdict into the commit, and into `references/api-ledger.md` when
+  the family comes to rely on the name.
 - `tools/read-buggrabber`: see Debugging.
 
 ## References
