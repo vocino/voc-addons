@@ -150,6 +150,9 @@ in CI on every Voc repo. Prose states the standard; checks enforce it.
   evidence live in `checks/deprecated-globals.txt` (principle 11)
 - `dual-toc.sh`: every addon ships a Retail toc and a Forever toc
   (principle 11)
+- `family-docs.sh`: the repo's `FAMILY.md` and `VERSIONING.md` are
+  byte-identical to the canonical copies in `family/`; the family
+  contract is edited there and copied out, never the other way
 
 Run them all: `bash checks/run-all.sh <repo-dir>`, which is the one
 line every repo's CI calls, so a new check lands here and in no
@@ -194,6 +197,10 @@ for.
 
 ## References
 
+- `family/FAMILY.md` and `family/VERSIONING.md`: the family contract
+  (members, naming, slash grammar, chat voice, sounds, palette,
+  settings, repository layout, release flow). Canonical here; every
+  repo carries a copy that CI holds identical.
 - `references/voc-visual-identity.md`: the shared visual spec. Color
   tokens, type hierarchy, information hierarchy, panel construction,
   the medallion icon language, motion and sound, anti-patterns.
