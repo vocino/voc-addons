@@ -9,7 +9,12 @@ end
 
 ns.COLORS = { gold = { 1, 0.82, 0 }, text = { 1, 1, 1 }, muted = { 0.5, 0.5, 0.5 } }
 
-ns.SOUNDS = { on = { "IG_MAINMENU_OPTION_CHECKBOX_ON", 856 } }
+ns.SOUNDS = {
+  on = { "IG_MAINMENU_OPTION_CHECKBOX_ON", 856 },
+  off = { "IG_MAINMENU_OPTION_CHECKBOX_OFF", 857 },
+  open = { "IG_MAINMENU_OPEN", 850 },
+  close = { "IG_MAINMENU_CLOSE", 851 },
+}
 function ns.play(kind)
   local s = ns.SOUNDS[kind]
   if not s or type(PlaySound) ~= "function" then return end
@@ -30,3 +35,7 @@ ns.HELP = {
   "/vf config     open Settings > AddOns > VocFixture",
   "/vf help       this list (/vocfixture works too)",
 }
+
+SLASH_VOCFIXTURE1 = "/vf"
+SLASH_VOCFIXTURE2 = "/vocfixture"
+SlashCmdList.VOCFIXTURE = function() ns.say("hello") end

@@ -145,7 +145,9 @@ in CI on every Voc repo. Prose states the standard; checks enforce it.
 - `no-reloadui.sh`: settings apply live; `ReloadUI` never ships
   (principle 4)
 - `compartment.sh`: every toc declares the three compartment entry
-  points and the Lua defines them (principle 10)
+  points and the Lua defines them, and every toc Notes teaches the
+  short slash as `(/xx)`, matching the `SLASH_*1` definition in Lua
+  (principle 10)
 - `no-deprecated-globals.sh`: no bare call to, and no `.luacheckrc`
   entry for, a global Blizzard moved into a `C_*` namespace or still
   ships only as a `Blizzard_Deprecated` shim; the list and its
@@ -160,6 +162,9 @@ in CI on every Voc repo. Prose states the standard; checks enforce it.
 - `family-docs.sh`: the repo's `FAMILY.md` and `VERSIONING.md` are
   byte-identical to the canonical copies in `family/`; the family
   contract is edited there and copied out, never the other way
+- `sounds.sh`: `ns.SOUNDS` carries the `on`/`off`/`open`/`close`
+  keys and `ns.play` plays them; extra keys and helpers are fine
+  (FAMILY.md "Sounds")
 
 Run them all: `bash checks/run-all.sh <repo-dir>`, which is the one
 line every repo's CI calls, so a new check lands here and in no
