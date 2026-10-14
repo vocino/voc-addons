@@ -18,11 +18,11 @@ presence-gate it. A name whose verdict is `GONE` or `unknown` never
 ships unguarded, and the bare forms Blizzard moved into a namespace
 live in `checks/deprecated-globals.txt` instead of here.
 
-Last full run: 2026-10-09, both branches at that day's head. Re-run
-with `tools/verify-api <name>...`; when a row changes, change the code
-first, the row second. Add a row when an addon comes to rely on a new
-name, and paste the verdict into the commit that adds the name to
-`.luacheckrc`.
+Last full run: 2026-10-14: live 12.1.5 (70391), forever 1.60.1 (70338).
+Re-run with `tools/verify-api <name>...`; when a row changes, change
+the code first, the row second. Add a row when an addon comes to rely
+on a new name, and paste the verdict into the commit that adds the name
+to `.luacheckrc`.
 
 | Name | live | forever |
 | --- | --- | --- |
@@ -34,6 +34,7 @@ name, and paste the verdict into the commit that adds the name to
 | `C_Container.GetContainerNumSlots` | ok, documented | same |
 | `C_Container.PickupContainerItem` | ok, documented | same |
 | `C_Container.UseContainerItem` | ok, documented | same |
+| `C_Cursor.GetCursorItem` | ok, documented | same |
 | `C_EquipmentSet.GetEquipmentSetIDs` | ok, documented | same |
 | `C_EquipmentSet.GetItemIDs` | ok, documented | same |
 | `C_Item.EquipItemByName` | ok, documented | same |
@@ -72,10 +73,12 @@ name, and paste the verdict into the commit that adds the name to
 | `CreateFrame` | bare, undocumented; Blizzard calls it | same |
 | `CreateObjectPool` | ok, Lua: Blizzard_SharedXMLBase/Pools.lua | same |
 | `CreateSettingsListSectionHeaderInitializer` | ok, Lua: Blizzard_Settings_Shared/Blizzard_SettingControls.lua | same |
+| `CursorHasItem` | ok, documented global | same |
 | `DeleteCursorItem` | ok, documented global | same |
 | `GetCursorInfo` | ok, documented global | same |
 | `GetExpansionLevel` | ok, documented global | same |
 | `GetInventoryItemLink` | bare, undocumented; Blizzard calls it | same |
+| `GetInventoryItemQuality` | bare, undocumented; Blizzard calls it | same |
 | `GetMoney` | ok, documented global | same |
 | `GetProfessionInfo` | bare, undocumented; Blizzard calls it | same |
 | `GetProfessions` | bare, undocumented; Blizzard calls it | same |
