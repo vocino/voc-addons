@@ -133,6 +133,44 @@ the addon loads and works everywhere, and the feature quietly sits out
 where it can't run. A missing API is never a missing addon. Dual tocs
 are the mechanism; presence gates are the safety net.
 
+### 12. Boring Lua
+
+The cleanest addon Lua is boring. Optimize for "a maintainer can
+understand the whole feature in one pass," not the fewest lines or
+the most sophisticated architecture.
+
+`local` by default. Every helper is a `local function`; every file
+opens `local name, ns = ...`; state lives on `ns`, never on `_G`.
+The only globals are the prefixed entry points Blizzard requires
+(`<Name>DB`, `SLASH_*`, the compartment functions), and `luacheck`
+holds that boundary.
+
+Explicit initialization. File top level defines; it does not act.
+SavedVariables rebind on `ADDON_LOADED`, defaults fill before use,
+the Settings panel builds once, and the one job runs from a named
+`ns.*` function called by an event or a slash command — never as a
+side effect of loading.
+
+Event-driven updates. Register only the events the feature needs;
+unregister what a disable turns off. A setting change calls the code
+it affects. Nothing polls, and nothing ticks on `OnUpdate` to re-read
+state.
+
+Almost no framework. Straight-line code and small helpers: no OOP
+emulation, no metatable magic, no generic event bus or settings
+framework, no vendored libraries (principle 8). A second small
+function beats an abstraction. The whole feature reads top to bottom
+in one file, in template order — chat, sounds, palette, defaults,
+the job, settings, slash, events last — one job per file
+(principle 6). `templates/addon/main.lua` is the shape.
+
+Testable seams. Behavior lives behind `ns.*` functions that stubbed
+WoW APIs can drive (FAMILY.md principle 7); the Blizzard entry
+points are thin wrappers around them.
+
+When in doubt, write the dumber version. No check enforces this
+one: taste is reviewed, and the template demonstrates it.
+
 ## Checks
 
 Principles that can be verified mechanically live in `checks/` and run

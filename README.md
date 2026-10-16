@@ -15,7 +15,7 @@ git clone https://github.com/vocino/voc-addons.git ~/.claude/skills/voc-addons
 
 ## What's inside
 
-- `SKILL.md`: the 11 principles: visual identity, interaction standards,
+- `SKILL.md`: the 12 principles: visual identity, interaction standards,
   scope discipline. When this skill and a repo's local notes disagree about
   craft, this skill wins.
 - `family/`: the canonical `FAMILY.md` and `VERSIONING.md` every Voc repo
