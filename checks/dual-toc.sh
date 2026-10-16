@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Principle 11: every addon ships a Retail toc and a Forever toc.
-# For each <Name>.toc that is not itself a Forever toc,
-# <Name>_Forever.toc must exist beside it.
+# The Forever client's toc suffix is Camelot (its game-type name), so
+# for each <Name>.toc that is not itself a Camelot toc,
+# <Name>_Camelot.toc must exist beside it.
 #
 # Run: bash checks/dual-toc.sh <repo-dir>
 # Exit nonzero on violation. Fast, dependency-free.
@@ -14,11 +15,11 @@ for toc in "$dir"/*.toc; do
   [ -e "$toc" ] || continue
   base="$(basename "$toc" .toc)"
   case "$base" in
-    *_Forever) continue ;;
+    *_Camelot) continue ;;
   esac
   found=1
-  if [ ! -f "$dir/${base}_Forever.toc" ]; then
-    echo "missing Forever toc: $dir/${base}_Forever.toc"
+  if [ ! -f "$dir/${base}_Camelot.toc" ]; then
+    echo "missing Forever (Camelot) toc: $dir/${base}_Camelot.toc"
     fail=1
   fi
 done
