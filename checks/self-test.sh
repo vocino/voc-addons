@@ -57,6 +57,13 @@ expect pass no-reloadui.sh "other function ending in ReloadUI"
 fresh; rm "$work/repo/VocFixture_Camelot.toc"
 expect fail dual-toc.sh "no Camelot toc"
 
+fresh; rm "$work/repo/.wowluarc.json"
+expect fail wowluarc.sh "no wowluarc config"
+fresh; sed -i '/\$schema/d' "$work/repo/.wowluarc.json"
+expect fail wowluarc.sh "no schema key"
+fresh; sed -i 's/"forever"/"classic"/' "$work/repo/.wowluarc.json"
+expect fail wowluarc.sh "forever flavor missing"
+
 fresh; sed -i '/AddonCompartmentFuncOnLeave/d' "$work/repo/VocFixture.toc"
 expect fail compartment.sh "missing OnLeave key"
 fresh; sed -i 's/^function VocFixture_CompartmentEnter/function VocFixture_CompartmentHover/' "$work/repo/main.lua"
