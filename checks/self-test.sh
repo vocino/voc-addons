@@ -54,8 +54,8 @@ expect fail no-reloadui.sh "ReloadUI call"
 fresh; printf 'local x = MyReloadUI()\n' >> "$work/repo/main.lua"
 expect pass no-reloadui.sh "other function ending in ReloadUI"
 
-fresh; rm "$work/repo/VocFixture_Forever.toc"
-expect fail dual-toc.sh "no Forever toc"
+fresh; rm "$work/repo/VocFixture_Camelot.toc"
+expect fail dual-toc.sh "no Camelot toc"
 
 fresh; sed -i '/AddonCompartmentFuncOnLeave/d' "$work/repo/VocFixture.toc"
 expect fail compartment.sh "missing OnLeave key"

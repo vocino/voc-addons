@@ -3,7 +3,7 @@
 ## Code Map
 
 - `main.lua`: the whole addon: the one job, Settings panel, compartment entry, slash
-- `VocName.toc` / `VocName_Forever.toc`: addon metadata (dual toc, shared `main.lua`; no `RequiredDeps`)
+- `VocName.toc` / `VocName_Camelot.toc`: addon metadata (dual toc, shared `main.lua`; no `RequiredDeps`)
 - `tests/run.lua`: stub-harness regression tests (`lua tests/run.lua`)
 - `FAMILY.md`: conventions shared by every Voc addon (canonical in the `voc-addons` skill)
 - `VERSIONING.md`: tag-driven semver releases (canonical in the skill)
