@@ -143,7 +143,7 @@ the most sophisticated architecture.
 opens `local name, ns = ...`; state lives on `ns`, never on `_G`.
 The only globals are the prefixed entry points Blizzard requires
 (`<Name>DB`, `SLASH_*`, the compartment functions), and `luacheck`
-holds that boundary.
+holds that boundary, while `wowlua_ls check .` holds the types.
 
 Explicit initialization. File top level defines; it does not act.
 SavedVariables rebind on `ADDON_LOADED`, defaults fill before use,
@@ -203,6 +203,9 @@ in CI on every Voc repo. Prose states the standard; checks enforce it.
 - `sounds.sh`: `ns.SOUNDS` carries the `on`/`off`/`open`/`close`
   keys and `ns.play` plays them; extra keys and helpers are fine
   (FAMILY.md "Sounds")
+- `wowluarc.sh`: the repo carries a `$schema`-validated
+  `.wowluarc.json` (and one under `tests/`) pinning the `retail` +
+  `forever` flavors, so wowlua-ls checks the right APIs
 
 Run them all: `bash checks/run-all.sh <repo-dir>`, which is the one
 line every repo's CI calls, so a new check lands here and in no

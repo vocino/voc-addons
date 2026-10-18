@@ -172,6 +172,7 @@ end
 -- Events. ADDON_LOADED rebinds SavedVariables (the client replaces the
 -- global after this file ran); PLAYER_LOGIN retries the panel in case
 -- the Settings API was not up yet.
+---@type Frame
 ns.frame = CreateFrame("Frame")
 ns.frame:RegisterEvent("ADDON_LOADED")
 ns.frame:RegisterEvent("PLAYER_LOGIN")
