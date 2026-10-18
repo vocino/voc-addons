@@ -18,7 +18,7 @@ presence-gate it. A name whose verdict is `GONE` or `unknown` never
 ships unguarded, and the bare forms Blizzard moved into a namespace
 live in `checks/deprecated-globals.txt` instead of here.
 
-Last full run: 2026-10-14: live 12.1.5 (70391), forever 1.60.1 (70338).
+Last full run: 2026-10-14: live 12.1.5 (70391), forever 1.60.1 (70338). Rows for VocXP reputation mode, VocGear vault/pet-battle gates, VocVendor's equipment-set check, and the Forever status-bar constants were re-verified 2026-10-15 against the same two builds in local mirrors (VocXP `.reference/api-mirror`).
 Re-run with `tools/verify-api <name>...`; when a row changes, change
 the code first, the row second. Add a row when an addon comes to rely
 on a new name, and paste the verdict into the commit that adds the name
@@ -29,8 +29,10 @@ to `.luacheckrc`.
 | `C_AddOns.GetAddOnInfo` | ok, documented | same |
 | `C_AddOns.IsAddOnLoaded` | ok, documented | same |
 | `C_AddOns.GetAddOnMetadata` | ok, documented | same |
+| `C_AddOns.GetAddOnInterfaceVersion` | ok, documented | same |
 | `C_Container.GetContainerItemInfo` | ok, documented | same |
 | `C_Container.GetContainerItemLink` | ok, documented | same |
+| `C_Container.GetContainerItemEquipmentSetInfo` | ok, documented | same |
 | `C_Container.GetContainerNumSlots` | ok, documented | same |
 | `C_Container.PickupContainerItem` | ok, documented | same |
 | `C_Container.UseContainerItem` | ok, documented | same |
@@ -46,6 +48,7 @@ to `.luacheckrc`.
 | `C_Item.GetItemUniquenessByID` | ok, documented | same |
 | `C_Item.GetSetBonusesForSpecializationByItemID` | ok, documented | same |
 | `C_Item.IsDecorItem` | ok, documented | same |
+| `C_Item.IsEquippableItem` | ok, documented | same |
 | `C_Item.IsItemBindToAccountUntilEquip` | ok, documented | same |
 | `C_Item.RequestLoadItemDataByID` | ok, documented | same |
 | `C_MerchantFrame.GetNumJunkItems` | ok, documented | same |
@@ -54,6 +57,12 @@ to `.luacheckrc`.
 | `C_MountJournal.GetMountInfoByID` | ok, documented | same |
 | `C_PetJournal.GetPetInfoByItemID` | used, undocumented; Blizzard calls it | same |
 | `C_PetJournal.GetNumCollectedInfo` | used, undocumented; Blizzard calls it | same |
+| `C_PetBattles.IsInBattle` | used, undocumented; Blizzard calls it | same |
+| `C_GossipInfo.GetFriendshipReputation` | ok, documented | same |
+| `C_GossipInfo.GetFriendshipReputationRanks` | ok, documented | same |
+| `C_MajorFactions.GetMajorFactionData` | ok, documented | same |
+| `C_MajorFactions.HasMaximumRenown` | ok, documented | same |
+| `C_PaperDollInfo.GetInventorySlotInfo` | ok, documented | same |
 | `C_PvP.GetWarModeRewardBonus` | ok, documented | same |
 | `C_PvP.IsWarModeDesired` | ok, documented | same |
 | `C_QuestLog.GetAllCompletedQuestIDs` | ok, documented | same |
@@ -67,6 +76,16 @@ to `.luacheckrc`.
 | `C_ToyBox.GetToyInfo` | used, undocumented; Blizzard calls it | same |
 | `C_TransmogCollection.PlayerHasTransmog` | ok, documented | same |
 | `C_UnitAuras.GetPlayerAuraBySpellID` | ok, documented | same |
+| `C_Reputation.GetFactionDataByID` | ok, documented | same |
+| `C_Reputation.GetFactionDataByIndex` | ok, documented | same |
+| `C_Reputation.GetFactionParagonInfo` | ok, documented | same |
+| `C_Reputation.GetNumFactions` | ok, documented | same |
+| `C_Reputation.GetWatchedFactionData` | ok, documented | same |
+| `C_Reputation.IsFactionParagonForCurrentPlayer` | ok, documented | same |
+| `C_Reputation.IsMajorFaction` | ok, documented | same |
+| `C_WeeklyRewards.CanClaimRewards` | ok, documented | same |
+| `C_WeeklyRewards.GetActivities` | ok, documented | same |
+| `C_WeeklyRewards.GetItemHyperlink` | ok, documented | same |
 | `CanGuildBankRepair` | bare, undocumented; Blizzard calls it | same |
 | `CanMerchantRepair` | bare, undocumented; Blizzard calls it | same |
 | `ClickSendMailItemButton` | bare, undocumented; Blizzard calls it | same |
@@ -79,14 +98,19 @@ to `.luacheckrc`.
 | `GetExpansionLevel` | ok, documented global | same |
 | `GetInventoryItemLink` | bare, undocumented; Blizzard calls it | same |
 | `GetInventoryItemQuality` | bare, undocumented; Blizzard calls it | same |
+| `GetMaxLevelForLatestExpansion` | ok, documented global | same |
+| `GetMaxLevelForPlayerExpansion` | ok, documented global | same |
+| `GetMaxPlayerLevel` | ok, documented global | same |
 | `GetMoney` | ok, documented global | same |
 | `GetProfessionInfo` | bare, undocumented; Blizzard calls it | same |
 | `GetProfessions` | bare, undocumented; Blizzard calls it | same |
+| `GetQuestLogRewardXP` | bare, undocumented; Blizzard calls it | same |
 | `GetRepairAllCost` | bare, undocumented; Blizzard calls it | same |
 | `GetTime` | ok, documented global | same |
 | `GetXPExhaustion` | ok, documented global | same |
 | `InCombatLockdown` | bare, undocumented; Blizzard calls it | same |
 | `IsInInstance` | ok, documented global | same |
+| `IsXPUserDisabled` | ok, documented global | same |
 | `IsShiftKeyDown` | ok, documented global | same |
 | `PlaySound` | ok, Lua: Blizzard_SharedXML/Mainline/Sound.lua | same |
 | `PlayerHasToy` | bare, undocumented; Blizzard calls it | same |
@@ -95,11 +119,17 @@ to `.luacheckrc`.
 | `StaticPopup_Show` | ok, Lua: Blizzard_StaticPopup/StaticPopup.lua | same |
 | `UnitClass` | ok, documented global | same |
 | `UnitGUID` | ok, documented global | same |
+| `UnitIsDeadOrGhost` | ok, documented global | same |
 | `UnitLevel` | ok, documented global | same |
 | `UnitXP` | ok, documented global | same |
 | `UnitXPMax` | ok, documented global | same |
 | `hooksecurefunc` | bare, undocumented; Blizzard calls it | same |
 | `strtrim` | ok, Lua: Blizzard_SharedXMLBase/Compat.lua | same |
+| `NUM_BAG_SLOTS` | ok, Lua: Blizzard_FrameXMLBase/Constants.lua | same |
+| `STATUS_BAR_CONTAINER_WIDTH` | absent; presence-gated | ok, Lua: Blizzard_StatusTrackingBar (per-gametype constants) |
+| `STATUS_BAR_NUM_SEGMENTS` | absent; presence-gated | ok, Lua: Blizzard_StatusTrackingBar (per-gametype constants) |
+| `STATUS_BAR_SIZE_ADJUSTMENT` | absent; presence-gated | ok, Lua: Blizzard_StatusTrackingBar (per-gametype constants) |
+| `EXHAUSTION_TICK_OFFSET_Y` | absent; presence-gated | ok, Lua: Blizzard_StatusTrackingBar (per-gametype constants) |
 | `Mixin` | ok, documented global | same |
 | `BackdropTemplateMixin` | ok, Lua: Blizzard_SharedXML/Backdrop.lua | same |
 | `MinimalSliderWithSteppersMixin` | ok, Lua: Blizzard_SharedXML/Shared/Slider/MinimalSlider.lua | same |
