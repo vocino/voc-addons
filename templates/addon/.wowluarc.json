@@ -1,0 +1,29 @@
+{
+  "addonRoot": true,
+  "flavors": [
+    "retail",
+    "forever"
+  ],
+  "ignore": [
+    ".reference/**"
+  ],
+  "globals": {
+    "read": [
+      "CreateFrame",
+      "GameTooltip",
+      "Settings",
+      "strtrim",
+      "PlaySound",
+      "SOUNDKIT"
+    ],
+    "write": [
+      "VocNameDB",
+      "SLASH_VOCNAME1",
+      "SLASH_VOCNAME2",
+      "SlashCmdList",
+      "VocName_CompartmentClick",
+      "VocName_CompartmentEnter",
+      "VocName_CompartmentLeave"
+    ]
+  }
+}
